@@ -1,2 +1,4 @@
 dev/
 test_data/
+PlusvCalc/__pycache__/*
+test/__pycache__/*
