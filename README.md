@@ -38,6 +38,6 @@ Esempio:
 
 |Total (inclusive of fees) | Fees | Notes                                    |
 ------------------------------------------------------------------------------
-|90 	                   | 0.86 | Converted 0,004028 BTC to 89,144745 USDC |
-|75	                       | 0.78 | Converted 0,003863 BTC to 0,12126672 ETH |
+|  90                      | 0.86 | Converted 0,004028 BTC to 89,144745 USDC |
+|  75                      | 0.78 | Converted 0,003863 BTC to 0,12126672 ETH |
 ```
