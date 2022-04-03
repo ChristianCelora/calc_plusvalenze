@@ -1,0 +1,16 @@
+"""
+    Converte report coinbase
+    args:
+        1 - filename .csv con le operazioni di importare
+"""
+import sys
+
+def main():
+    if len(sys.argv) < 2:
+        print("Specificare un file csv in input")
+        sys.exit(1)
+
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
