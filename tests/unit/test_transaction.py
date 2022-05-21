@@ -10,10 +10,10 @@ def dataset1():
         "qty": 0.003863,
         "currency": "USD",
         "asset_price": 19414.96,
-        "fees": 0.86,
+        "fees": 0.78,
         "notes": "Converted 0,004028 BTC to 89,144745 USDC",
         "subtotal": 74.22,
-        "total": 90
+        "total": 75
     }
 
 def dataset2():
@@ -24,10 +24,10 @@ def dataset2():
         "qty": 0.004028,
         "currency": "USD",
         "asset_price": 22343.59,
-        "fees": 0.78,
+        "fees": 0.86,
         "notes": "Converted 0,003863 BTC to 0,12126672 ETH",
         "subtotal": 89.14,
-        "total": 75
+        "total": 90
     }
 
 @pytest.fixture(scope='module', params=[1, 2])

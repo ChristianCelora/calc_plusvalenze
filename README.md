@@ -15,8 +15,8 @@ Formato file csv (x colonne):
  - Quantity Transacted: quantitæ transazione
  - Spot Price Currency: Valuta usata x il prezzo
  - Spot Price at Transaction: Prezzo dell'asset al momento della transazione
- - Subtotal: Totale transazione
- - Total (inclusive of fees): Totale transazione, incluso di commissioni
+ - Subtotal: Totale transazione (Total - Fees)
+ - Total (inclusive of fees): Totale transazione, incluso di commissioni (Quantity Transacted * Spot Price at Transaction)
  - Fees: commissioni
  - Notes
 

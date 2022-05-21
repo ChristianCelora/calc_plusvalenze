@@ -14,9 +14,9 @@ class Transaction:
         self.fees = fees
         self.notes = notes
 
-    def get_subtotal(self) -> float: 
+    def get_total(self) -> float: 
         return round(self.qty * self.asset_price, 2)
 
-    def get_total(self) -> float: 
-        return self.get_subtotal() + self.fees
+    def get_subtotal(self) -> float: 
+        return self.get_total() - self.fees
     
