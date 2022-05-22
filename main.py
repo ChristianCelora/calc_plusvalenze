@@ -12,8 +12,7 @@ def main():
         sys.exit(1)
 
     # Read operations
-    with open(sys.argv[1], "r") as csv_file:
-        reader = csv.reader(csv_file)
+    
 
 
     sys.exit(0)

@@ -8,10 +8,10 @@ class Transaction:
         self.timestamp = timestamp
         self.type = trans_type
         self.asset = asset
-        self.qty = qty
+        self.qty = float(qty)
         self.currency = currency
-        self.asset_price = asset_price
-        self.fees = fees
+        self.asset_price = float(asset_price)
+        self.fees = float(fees)
         self.notes = notes
 
     def get_total(self) -> float: 
