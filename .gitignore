@@ -1,4 +1,8 @@
 dev/
 test_data/
+!test_data/.gitkeeep
+!test_data/test_data_clean.csv
+!test_data/test_data_error.csv
+!test_data/test_data_mixed.csv
 PlusvCalc/__pycache__/*
 tests/unit/__pycache__/*
