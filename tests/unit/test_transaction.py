@@ -1,5 +1,5 @@
 import pytest
-
+from PlusvCalc.CoinbCsvReader import CoinbCsvReader
 from PlusvCalc.Transaction import Transaction
 
 def dataset1():
@@ -38,16 +38,24 @@ def dataset(request):
         return dataset2()
 
 def test_get_subtotal(dataset):
-    t = Transaction(dataset["timestamp"], dataset["type"], dataset["asset"], 
-                dataset["qty"], dataset["currency"], dataset["asset_price"],
-                dataset["fees"], dataset["notes"])
+    coinb_reader = CoinbCsvReader()
+    t = Transaction(
+            coinb_reader.getDatetimeFromCoinbTimestamp(dataset["timestamp"]), 
+            dataset["type"], dataset["asset"], 
+            dataset["qty"], dataset["currency"], dataset["asset_price"],
+            dataset["fees"], dataset["notes"]
+        )
 
     assert t.get_subtotal() == dataset["subtotal"]
 
 def test_get_total(dataset):
-    t = Transaction(dataset["timestamp"], dataset["type"], dataset["asset"], 
-                dataset["qty"], dataset["currency"], dataset["asset_price"],
-                dataset["fees"], dataset["notes"])
+    coinb_reader = CoinbCsvReader()
+    t = Transaction(
+            coinb_reader.getDatetimeFromCoinbTimestamp(dataset["timestamp"]), 
+            dataset["type"], dataset["asset"], 
+            dataset["qty"], dataset["currency"], dataset["asset_price"],
+            dataset["fees"], dataset["notes"]
+    )
                 
     assert t.get_total() == dataset["total"]
     

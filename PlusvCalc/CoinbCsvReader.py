@@ -26,7 +26,7 @@ class CoinbCsvReader:
                             fees = 0
                         
                         transactions.append(Transaction(
-                            datetime.fromisoformat(row["Timestamp"].replace("Z", "")),
+                            self.getDatetimeFromCoinbTimestamp(row["Timestamp"]),
                             row["Transaction Type"],
                             row["Asset"],
                             row["Quantity Transacted"],
@@ -53,3 +53,6 @@ class CoinbCsvReader:
         if all (k in row for k in (self.header_keys)):
             return True
         return False
+
+    def getDatetimeFromCoinbTimestamp(self, timestamp: str) -> datetime:
+        return datetime.fromisoformat(timestamp.replace("Z", ""))

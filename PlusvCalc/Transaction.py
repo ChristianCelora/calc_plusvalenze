@@ -5,6 +5,9 @@ class Transaction:
 
     def __init__(self, timestamp: datetime, trans_type: str, asset: str, qty: float, 
                 currency: str, asset_price: float, fees: float, notes: str):
+        if not isinstance(timestamp, datetime):
+            raise TypeError("timestamp must be a datetime instance")
+
         self.timestamp = timestamp
         self.type = trans_type
         self.asset = asset
