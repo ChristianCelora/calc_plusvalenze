@@ -19,4 +19,12 @@ class Transaction:
 
     def get_subtotal(self) -> float: 
         return self.get_total() - self.fees
-    
+
+    def __str__(self) -> str:
+        return "{} {} {} at {} {}".format(
+            self.type, 
+            self.qty, 
+            self.asset, 
+            self.asset_price, 
+            self.currency
+        )

@@ -13,8 +13,6 @@ class CoinbCsvReader:
         with open(csv_path, "r+") as csv_file:
             reader = csv.reader(csv_file, delimiter=delimiter)
             header_row_index = self.detectHeader(reader)
-            print("csv", csv_path)
-            print("header_row_index", header_row_index)
             # Skips header_row_index lines
             csv_file.seek(0)
             for i in range(header_row_index): next(csv_file)
