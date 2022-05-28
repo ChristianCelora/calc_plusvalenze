@@ -42,6 +42,13 @@ Esempio:
 |  75                      | 0.78 | Converted 0,003863 BTC to 0,12126672 ETH |
 ```
 
+## Calcolo plus / minus valenza
+
+Per il calcolo della plusvalenza (o minusvalenza) si calcola il prezzo di vendita, o scambio della moneta (si tratta comunque di una cessione ad onere), con il prezzo di acquisto.
+
+Nel caso ci sono più momenti di acquisto si utilizza il criterio di **LIFO** (Last In, First Out), ossia, consideriamo cedute per prime le criptovalute acquisite più recentemente.
+
+Inoltre, bisogna considerare che Coinbase utilizza dei prezzi in dollari (USD). In questo caso bisogna convertire il prezzo in dollari con quello in euro al giorno nel quale è stata effettutata l'operazione di acquisto / vendita.
 
 ## DEV
 
