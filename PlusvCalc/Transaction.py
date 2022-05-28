@@ -3,6 +3,12 @@ from datetime import datetime
 class Transaction:
     """ Stores a single transaction data """
 
+    TYPE_CONVERT = "Convert"
+    TYPE_BUY = "Buy"
+    TYPE_SELL = "Sell"
+    TYPE_SEND = "Send"
+    TYPE_EARN = "Coinbase Earn"
+
     def __init__(self, timestamp: datetime, trans_type: str, asset: str, qty: float, 
                 currency: str, asset_price: float, fees: float, notes: str):
         if not isinstance(timestamp, datetime):
