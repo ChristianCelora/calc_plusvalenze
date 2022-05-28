@@ -14,11 +14,20 @@ class PlusVCalculator:
             in caso di più transazioni si utilizza il criterio LIFO, 
             partendo dalla più recente operazione di acquisto
         """
-        # get transactions 
-        # format transaction in structure
-        #   symbol -> bought / sold -> date -> Transaction
+        t_dict = self.processTransactions(transactions)
+
+        # calc plus valenze
+
+        pass
+
+    def processTransactions(self, t_list: list) -> dict:
+        """
+            Formattazione lista transazioni in un dizionario.
+            La sua struttura:
+                symbol -> bought / sold -> date -> Transaction
+        """
         tr_dict = {}
-        for t in transactions:
+        for t in t_list:
             # Filter unwanted typed
             if t.type != Transaction.TYPE_CONVERT and t.type != Transaction.TYPE_BUY and t.type != Transaction.TYPE_SELL: 
                 continue
@@ -31,8 +40,5 @@ class PlusVCalculator:
             
             t_time = t.timestamp.strftime("%Y%m%dT%H%m%s")
             tr_dict[t.asset][t.type][t_time] = t # tr_dict[t.asset] is ordered by date
-        print(tr_dict)
-
-        # calc plus valenze
-
-        pass
+            
+        return tr_dict
