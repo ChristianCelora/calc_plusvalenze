@@ -13,15 +13,20 @@ class CoinbCsvReader:
         with open(csv_path, "r+") as csv_file:
             reader = csv.reader(csv_file, delimiter=delimiter)
             header_row_index = self.detectHeader(reader)
+            print("csv", csv_path)
             print("header_row_index", header_row_index)
-            csv_file.seek(header_row_index) # Skips header_row_index lines
+            # Skips header_row_index lines
+            csv_file.seek(0)
+            for i in range(header_row_index): next(csv_file)
+            # Now csv starts at header. Read first lines
             reader = csv.DictReader(csv_file, delimiter=delimiter)
             for i, row in enumerate(reader):
-                if i < header_row_index: 
-                    continue
-                print(row)
                 if self.isRowValid(row):
                     try:
+                        fees = row["Fees"]
+                        if fees == "":
+                            fees = 0
+                        
                         transactions.append(Transaction(
                             datetime.fromisoformat(row["Timestamp"].replace("Z", "")),
                             row["Transaction Type"],
@@ -29,7 +34,7 @@ class CoinbCsvReader:
                             row["Quantity Transacted"],
                             row["Spot Price Currency"],
                             row["Spot Price at Transaction"],
-                            row["Fees"],
+                            fees,
                             row["Notes"]
                         ))
                     except Exception as e: 

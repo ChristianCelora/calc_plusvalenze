@@ -12,7 +12,7 @@ def checkTransaction(t: Transaction):
     assert t.qty > 0, t.qty
     assert t.currency != "", t.currency
     assert t.asset_price != "", t.asset_price
-    assert t.fees > 0, t.fees
+    assert t.fees >= 0, t.fees
     assert t.notes != "", t.notes
     # assert t.subtotal > 0, t.subtotal
     # assert t.total > 0, t.total
@@ -50,7 +50,7 @@ def test_readCsvMixed():
     transactions = csv_reader.getTransactionsFromCsv(csv_path)
 
     assert type(transactions) == list
-    assert len(transactions) == 24
+    assert len(transactions) == 23
     for t in transactions:
         assert type(t) == Transaction
         checkTransaction(t)
