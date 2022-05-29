@@ -31,9 +31,12 @@ class PlusVCalculator:
         """
         tr_dict = {}
         for t in t_list:
-            # Filter unwanted typed
             if t.type == Transaction.TYPE_CONVERT:
-                pass
+                t_conv = t.getConvertedTransaction()
+                if t_conv is not None:
+                    t.type = Transaction.TYPE_SELL
+                    tr_dict = self.__addTransactionToDict(tr_dict, t)
+                    tr_dict = self.__addTransactionToDict(tr_dict, t_conv)
             elif t.type == Transaction.TYPE_BUY or t.type == Transaction.TYPE_SELL:
                 tr_dict = self.__addTransactionToDict(tr_dict, t)
             

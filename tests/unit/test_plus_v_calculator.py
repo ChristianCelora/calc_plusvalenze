@@ -33,8 +33,14 @@ def test_BuySellProcessTransactions():
 def test_ConvertProcessTransactions():
     transactions = [
         Transaction(
-            datetime(2022, 5, 29, 0, 0, 0), Transaction.TYPE_CONVERT, "BTC", 
-            0.003863, "USD", 19414.96, 15, "Converted 0,003863 BTC to 0,12126672 ETH"
+            datetime(2022, 5, 29, 0, 0, 0), 
+            Transaction.TYPE_CONVERT, 
+            "BTC", 
+            0.003863, 
+            "USD", 
+            19414.96, 
+            15, 
+            "Converted 0,003863 BTC to 0,12126672 ETH"
         )
     ]
 
@@ -47,15 +53,17 @@ def test_ConvertProcessTransactions():
     assert Transaction.TYPE_SELL in t_dict["BTC"]
     assert Transaction.TYPE_BUY in t_dict["ETH"]
 
-    t_btc = t_dict["BTC"][Transaction.TYPE_SELL].popitem()
-    t_eth = t_dict["ETH"][Transaction.TYPE_BUY].popitem()
+    t_btc = t_dict["BTC"][Transaction.TYPE_SELL].popitem()[1]
+    t_eth = t_dict["ETH"][Transaction.TYPE_BUY].popitem()[1]
     assert isinstance(t_btc, Transaction)
     assert isinstance(t_eth, Transaction)
     assert t_btc.qty == 0.003863
-    assert t_btc.asset_price == 0.003863
+    assert t_btc.asset_price == 19414.96
+    assert t_btc.currency == "USD"
 
     assert t_eth.qty == 0.12126672
     # 19414.96 : 0.12126672 = x : 
     # x = (19414.96 * 0.003863) / 0.12126672
-    assert t_eth.asset_price == 618.471337231 # in USD
+    assert t_eth.asset_price == 618.471 # in USD
+    assert t_eth.currency == "USD"
 
