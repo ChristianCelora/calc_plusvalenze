@@ -52,14 +52,14 @@ class Transaction:
             notes_split[-1], 
             converted_qty, 
             self.currency,
-            self.__calcCnvertedPrice(qty, converted_qty),
+            self.__calcConvertedPrice(qty, converted_qty),
             0,
             self.notes
         )
 
         return t_new
 
-    def __calcCnvertedPrice(self, qty: float, qty_converted: float) -> float:
+    def __calcConvertedPrice(self, qty: float, qty_converted: float) -> float:
         return round(qty * self.asset_price / qty_converted, 3)
 
     def __str__(self) -> str:
