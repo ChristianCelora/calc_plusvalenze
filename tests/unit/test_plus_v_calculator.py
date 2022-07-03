@@ -67,3 +67,39 @@ def test_ConvertProcessTransactions():
     assert t_eth.asset_price == 618.471 # in USD
     assert t_eth.currency == "USD"
 
+def test_calculatePlusValenzeFromDict():
+    t_dict = {
+        "BTC": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 29, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    19414.96, 
+                    15, 
+                    "test"
+                )
+            },
+            Transaction.TYPE_SELL: {
+                datetime(2022, 5, 29, 15, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 15, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    12500.67, 
+                    12, 
+                    "test"
+                )
+            }
+        }
+    }
+
+    plusv_calc = PlusVCalculator()
+    plusv = plusv_calc.calculatePlusValenzeFromDict(t_dict)
+
+    assert isinstance(plusv, dict)
+    assert "BTC" in plusv
+    assert plusv["BTC"] == -6926.29

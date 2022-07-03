@@ -17,8 +17,9 @@ class PlusVCalculator:
         t_dict = self.processTransactions(transactions)
 
         # calc plus valenze
+        plus_by_asset = self.calculatePlusValenzeFromDict(t_dict)
 
-        pass
+        return sum(plus_by_asset.values())
 
     def processTransactions(self, t_list: list) -> dict:
         """
@@ -43,6 +44,9 @@ class PlusVCalculator:
         return tr_dict
 
     def __addTransactionToDict(self, dict: dict, t: Transaction) -> dict:
+        """
+            Aggiunge una transazione alla struttura del dizionario
+        """
         if t.asset not in dict:
                 dict[t.asset] = {}
 
@@ -54,3 +58,58 @@ class PlusVCalculator:
         dict[t.asset][t.type][t_time] = t 
 
         return dict
+
+    def calculatePlusValenzeFromDict(self, dict: dict) -> dict:
+        """
+            Calcola le plusvalenze per ogni asset del dizionario
+        """
+        plus_valenze = {}
+        for asset in dict:
+            plus_valenze[asset] = self.__calculatePlusValenzeForAsset(dict[asset])
+        return plus_valenze
+
+    def __calculatePlusValenzeForAsset(self, dict: dict) -> float:
+        """
+            Calcola la plusvalenza per un asset
+
+            Nel caso ci sono più momenti di acquisto si utilizza il criterio di LIFO (Last In, First Out), 
+            ossia, consideriamo cedute per prime le criptovalute acquisite più recentemente.
+
+            plusvalenza = ((sell_price - bought_price) * sell_qty) - fees
+        """
+        plusvalenza = 0
+        # for d_sell in dict[Transaction.TYPE_SELL]:
+        for d_sell in sorted(dict[Transaction.TYPE_SELL].keys(), reverse=True):
+            t_sell = dict[Transaction.TYPE_SELL][d_sell]
+            sold_qty = t_sell.qty
+            while sold_qty > 0:
+                d_buy, t_buy = self.__getClosestBuyTransaction(dict[Transaction.TYPE_BUY], d_sell)
+                if t_buy is None:
+                    raise Exception("No buy transaction found for asset: " + t_sell.asset)
+
+                # calcolo plusvalenza
+                plusvalenza += ((t_sell.asset_price - t_buy.asset_price) * sold_qty) - t_sell.fees
+                sold_qty -= t_buy.qty
+                if sold_qty > 0:
+                    del dict[Transaction.TYPE_BUY][d_buy]   # rimuovo la transazione acquisto dalla lista
+                else:
+                    dict[Transaction.TYPE_BUY][d_buy].qty -= t_sell.qty # aggiorno la Transaction
+
+        return round(plusvalenza, 2)
+
+    def __getClosestBuyTransaction(self, dict: dict, datestr: str) -> tuple:
+        """
+            Restituisce la transazione piu recente rispetto alla data datestr di acquisto
+
+            datestr format: %Y%m%dT%H%m%s
+        """
+        closest_t_date = None
+        closest_t = None
+        for dt in sorted(dict.keys(), reverse=True):
+            if dt > datestr:
+                continue
+            
+            closest_t_date = dt
+            closest_t = dict[dt]
+
+        return (closest_t_date, closest_t)
