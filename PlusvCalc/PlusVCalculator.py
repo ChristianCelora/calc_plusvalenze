@@ -89,16 +89,18 @@ class PlusVCalculator:
                         raise Exception("No buy transaction found for asset: " + t_sell.asset)
 
                     # calcolo plusvalenza
-                    print("({} - {}) * {}".format(t_sell.asset_price, t_buy.asset_price, min(sold_qty, t_buy.qty)))
                     plusvalenza += round((t_sell.asset_price - t_buy.asset_price) * min(sold_qty, t_buy.qty), 2)
-                    print("date buy {} plusvalenza {}".format(d_buy, plusvalenza))
-                    sold_qty -= t_buy.qty
-                    if sold_qty > 0:
+                    qty_bought = t_buy.qty
+                    if sold_qty - qty_bought  > 0:
                         del dict[Transaction.TYPE_BUY][d_buy]   # rimuovo la transazione acquisto dalla lista
                         # Andrebbero rimosse le fees d'acquisto?
                     else:
-                        dict[Transaction.TYPE_BUY][d_buy].qty -= t_sell.qty # aggiorno la Transaction
-                
+                        # Aggiorna la Transaction
+                        # Same as: dict[Transaction.TYPE_BUY][d_buy].qty -= min(qty_bought, sold_qty)
+                        t_buy.qty -= min(qty_bought, sold_qty)
+
+                    sold_qty -= qty_bought                
+                    
                 # Rimuovo le fees
                 plusvalenza -= t_sell.fees
 
@@ -113,9 +115,7 @@ class PlusVCalculator:
         closest_t_date = None
         closest_t = None
         for dt in sorted(dict.keys(), reverse=True):
-            print("date {}".format(dt))
             if dt > datestr:
-                print("skip date {}".format(dt))
                 continue
             
             closest_t_date = dt
