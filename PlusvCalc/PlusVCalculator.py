@@ -79,21 +79,28 @@ class PlusVCalculator:
         """
         plusvalenza = 0
         # for d_sell in dict[Transaction.TYPE_SELL]:
-        for d_sell in sorted(dict[Transaction.TYPE_SELL].keys(), reverse=True):
-            t_sell = dict[Transaction.TYPE_SELL][d_sell]
-            sold_qty = t_sell.qty
-            while sold_qty > 0:
-                d_buy, t_buy = self.__getClosestBuyTransaction(dict[Transaction.TYPE_BUY], d_sell)
-                if t_buy is None:
-                    raise Exception("No buy transaction found for asset: " + t_sell.asset)
+        if Transaction.TYPE_SELL in dict and len(dict[Transaction.TYPE_SELL].keys()) > 0:  
+            for d_sell in sorted(dict[Transaction.TYPE_SELL].keys(), reverse=True):
+                t_sell = dict[Transaction.TYPE_SELL][d_sell]
+                sold_qty = t_sell.qty
+                while sold_qty > 0:
+                    d_buy, t_buy = self.__getClosestBuyTransaction(dict[Transaction.TYPE_BUY], d_sell)
+                    if t_buy is None:
+                        raise Exception("No buy transaction found for asset: " + t_sell.asset)
 
-                # calcolo plusvalenza
-                plusvalenza += ((t_sell.asset_price - t_buy.asset_price) * sold_qty) - t_sell.fees
-                sold_qty -= t_buy.qty
-                if sold_qty > 0:
-                    del dict[Transaction.TYPE_BUY][d_buy]   # rimuovo la transazione acquisto dalla lista
-                else:
-                    dict[Transaction.TYPE_BUY][d_buy].qty -= t_sell.qty # aggiorno la Transaction
+                    # calcolo plusvalenza
+                    print("({} - {}) * {}".format(t_sell.asset_price, t_buy.asset_price, min(sold_qty, t_buy.qty)))
+                    plusvalenza += round((t_sell.asset_price - t_buy.asset_price) * min(sold_qty, t_buy.qty), 2)
+                    print("date buy {} plusvalenza {}".format(d_buy, plusvalenza))
+                    sold_qty -= t_buy.qty
+                    if sold_qty > 0:
+                        del dict[Transaction.TYPE_BUY][d_buy]   # rimuovo la transazione acquisto dalla lista
+                        # Andrebbero rimosse le fees d'acquisto?
+                    else:
+                        dict[Transaction.TYPE_BUY][d_buy].qty -= t_sell.qty # aggiorno la Transaction
+                
+                # Rimuovo le fees
+                plusvalenza -= t_sell.fees
 
         return round(plusvalenza, 2)
 
@@ -106,10 +113,13 @@ class PlusVCalculator:
         closest_t_date = None
         closest_t = None
         for dt in sorted(dict.keys(), reverse=True):
+            print("date {}".format(dt))
             if dt > datestr:
+                print("skip date {}".format(dt))
                 continue
             
             closest_t_date = dt
             closest_t = dict[dt]
+            break
 
         return (closest_t_date, closest_t)

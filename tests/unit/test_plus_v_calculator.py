@@ -67,7 +67,7 @@ def test_ConvertProcessTransactions():
     assert t_eth.asset_price == 618.471 # in USD
     assert t_eth.currency == "USD"
 
-def test_calculatePlusValenzeFromDict():
+def test_calculateBasicPlusValenzeFromDict():
     t_dict = {
         "BTC": {
             Transaction.TYPE_BUY: {
@@ -103,3 +103,110 @@ def test_calculatePlusValenzeFromDict():
     assert isinstance(plusv, dict)
     assert "BTC" in plusv
     assert plusv["BTC"] == -6926.29
+
+def test_calculateZeroPlusValenzeFromDict1():
+    t_dict = {
+        "BTC": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 29, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    19414.96, 
+                    15, 
+                    "test"
+                )
+            }
+        }
+    }
+
+    plusv_calc = PlusVCalculator()
+    plusv = plusv_calc.calculatePlusValenzeFromDict(t_dict)
+
+    assert isinstance(plusv, dict)
+    assert "BTC" in plusv
+    assert plusv["BTC"] == 0
+
+def test_calculateZeroPlusValenzeFromDict2():
+    t_dict = {
+        "BTC": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 29, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    19414.96, 
+                    15, 
+                    "test"
+                ),
+                datetime(2022, 5, 30, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 30, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    19414.96, 
+                    15, 
+                    "test"
+                )
+            }
+        }
+    }
+
+    plusv_calc = PlusVCalculator()
+    plusv = plusv_calc.calculatePlusValenzeFromDict(t_dict)
+
+    assert isinstance(plusv, dict)
+    assert "BTC" in plusv
+    assert plusv["BTC"] == 0
+
+def test_calculateMultipleBuysPlusValenzeFromDict():
+    t_dict = {
+        "BTC": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 28, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 28, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    25123.48, 
+                    15, 
+                    "test"
+                ),
+                datetime(2022, 5, 29, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    0.5, 
+                    "USD", 
+                    19414.96, 
+                    15, 
+                    "test"
+                )
+            },
+            Transaction.TYPE_SELL: {
+                datetime(2022, 5, 29, 15, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 15, 0, 0), 
+                    Transaction.TYPE_SELL, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    12500.67, 
+                    12, 
+                    "test"
+                )
+            }
+        }
+    }
+
+    plusv_calc = PlusVCalculator()
+    plusv = plusv_calc.calculatePlusValenzeFromDict(t_dict)
+
+    assert isinstance(plusv, dict)
+    assert "BTC" in plusv
+    assert plusv["BTC"] == -9780.54
