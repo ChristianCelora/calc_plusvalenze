@@ -338,5 +338,74 @@ def test_calculateMultipleSellsPlusValenzeFromDict1():
     # (55500,50−49000,96) × 4 + (55500,50−19414,96) × 0,5 + (55500,50−25123,48) × 0,5
     # (12500,67−25123,48) × 1
     # minus fees
-    plus_expected_mius_feed = (46606.63 - 100 - 12)
-    assert plusv["BTC"] == plus_expected_mius_feed
+    plus_expected_mius_fees = (46606.63 - 100 - 12)
+    assert plusv["BTC"] == plus_expected_mius_fees
+
+def test_calculatePlusvalenzeForMultipleCoins():
+    t_dict = {
+        "BTC": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 28, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 28, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "BTC", 
+                    2, 
+                    "USD", 
+                    25123.48, 
+                    15, 
+                    "test"
+                ),
+            },
+            Transaction.TYPE_SELL: {
+                datetime(2022, 5, 29, 15, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 15, 0, 0), 
+                    Transaction.TYPE_SELL, 
+                    "BTC", 
+                    1, 
+                    "USD", 
+                    12500.67, 
+                    12, 
+                    "test"
+                )
+            }
+        },
+        "ETH": {
+            Transaction.TYPE_BUY: {
+                datetime(2022, 5, 28, 0, 0, 0): Transaction(
+                    datetime(2022, 5, 28, 0, 0, 0), 
+                    Transaction.TYPE_BUY, 
+                    "ETH", 
+                    2, 
+                    "USD", 
+                    350.50, 
+                    15, 
+                    "test"
+                ),
+            },
+            Transaction.TYPE_SELL: {
+                datetime(2022, 5, 29, 15, 0, 0): Transaction(
+                    datetime(2022, 5, 29, 15, 0, 0), 
+                    Transaction.TYPE_SELL, 
+                    "ETH", 
+                    2, 
+                    "USD", 
+                    4508.00, 
+                    10.50, 
+                    "test"
+                )
+            }
+        }
+    }
+
+    plusv_calc = PlusVCalculator()
+    plusv = plusv_calc.calculatePlusValenzeFromDict(t_dict)
+
+    assert isinstance(plusv, dict)
+    assert "BTC" in plusv
+    assert "ETH" in plusv
+    # (55500,50−49000,96) × 4 + (55500,50−19414,96) × 0,5 + (55500,50−25123,48) × 0,5
+    # (12500,67−25123,48) × 1
+    # minus fees
+    plus_expected_mius_fees = (46606.63 - 100 - 12)
+    assert plusv["BTC"] == 12500.67 - 25123.48 - 12
+    assert plusv["ETH"] == 4508.00*2 - 350.50*2 - 10.50
