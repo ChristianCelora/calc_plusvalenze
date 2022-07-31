@@ -4,7 +4,7 @@ class PlusVCalculator:
     def __init__(self) -> None:
         pass
 
-    def calcPlusV(self, transactions: Transaction):
+    def calcPlusV(self, transactions: Transaction) -> dict:
         """
             Calcolo plusvalenze 
 
@@ -14,12 +14,12 @@ class PlusVCalculator:
             in caso di più transazioni si utilizza il criterio LIFO, 
             partendo dalla più recente operazione di acquisto
         """
-        t_dict = self.processTransactions(transactions)
+        processed_transactions = self.processTransactions(transactions)
 
         # calc plus valenze
-        plus_by_asset = self.calculatePlusValenzeFromDict(t_dict)
+        plus_by_asset = self.calculatePlusValenzeFromDict(processed_transactions)
 
-        return sum(plus_by_asset.values())
+        return plus_by_asset
 
     def processTransactions(self, t_list: list) -> dict:
         """
@@ -65,7 +65,10 @@ class PlusVCalculator:
         """
         plus_valenze = {}
         for asset in dict:
-            plus_valenze[asset] = self.__calculatePlusValenzeForAsset(dict[asset])
+            try:
+                plus_valenze[asset] = self.__calculatePlusValenzeForAsset(dict[asset])
+            except Exception as e:
+                plus_valenze[asset] = None
         return plus_valenze
 
     def __calculatePlusValenzeForAsset(self, dict: dict) -> float:
@@ -78,7 +81,6 @@ class PlusVCalculator:
             plusvalenza = ((sell_price - bought_price) * sell_qty) - fees
         """
         plusvalenza = 0
-        # for d_sell in dict[Transaction.TYPE_SELL]:
         if Transaction.TYPE_SELL in dict and len(dict[Transaction.TYPE_SELL].keys()) > 0:  
             for d_sell in sorted(dict[Transaction.TYPE_SELL].keys(), reverse=True):
                 t_sell = dict[Transaction.TYPE_SELL][d_sell]
@@ -86,7 +88,7 @@ class PlusVCalculator:
                 while sold_qty > 0:
                     d_buy, t_buy = self.__getClosestBuyTransaction(dict[Transaction.TYPE_BUY], d_sell)
                     if t_buy is None:
-                        raise Exception("No buy transaction found for asset: " + t_sell.asset)
+                        raise Exception("No buy transaction found for asset: {}. Need {} qty.".format(t_sell.asset, t_sell.qty))
 
                     # calcolo plusvalenza
                     plusvalenza += round((t_sell.asset_price - t_buy.asset_price) * min(sold_qty, t_buy.qty), 2)

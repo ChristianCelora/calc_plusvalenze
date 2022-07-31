@@ -6,6 +6,8 @@
 import sys
 import csv
 from PlusvCalc.CoinbCsvReader import CoinbCsvReader
+from PlusvCalc.PlusVCalculator import PlusVCalculator
+from datetime import datetime
 
 def main():
     if len(sys.argv) < 2:
@@ -15,8 +17,11 @@ def main():
     # Read operations
     coinb_reader = CoinbCsvReader()
     transactions = coinb_reader.getTransactionsFromCsv(sys.argv[1])
-    for t in transactions :
-        print(t)
+
+    plusv_calc = PlusVCalculator()
+
+    plusvalenze = plusv_calc.calcPlusV(transactions)
+    print(plusvalenze)
 
     sys.exit(0)
 
