@@ -20,7 +20,7 @@ def main():
 
     plusv_calc = PlusVCalculator()
 
-    plusvalenze = plusv_calc.calcPlusV(transactions)
+    plusvalenze = plusv_calc.calcPlusV(transactions, 2021)
     print(plusvalenze)
 
     sys.exit(0)

@@ -4,7 +4,7 @@ class PlusVCalculator:
     def __init__(self) -> None:
         pass
 
-    def calcPlusV(self, transactions: Transaction) -> dict:
+    def calcPlusV(self, transactions: Transaction, year: int = None) -> dict:
         """
             Calcolo plusvalenze 
 
@@ -17,7 +17,7 @@ class PlusVCalculator:
         processed_transactions = self.processTransactions(transactions)
 
         # calc plus valenze
-        plus_by_asset = self.calculatePlusValenzeFromDict(processed_transactions)
+        plus_by_asset = self.calculatePlusValenzeFromDict(processed_transactions, year)
 
         return plus_by_asset
 
@@ -59,19 +59,19 @@ class PlusVCalculator:
 
         return dict
 
-    def calculatePlusValenzeFromDict(self, dict: dict) -> dict:
+    def calculatePlusValenzeFromDict(self, dict: dict, year: int = None) -> dict:
         """
             Calcola le plusvalenze per ogni asset del dizionario
         """
         plus_valenze = {}
         for asset in dict:
             try:
-                plus_valenze[asset] = self.__calculatePlusValenzeForAsset(dict[asset])
+                plus_valenze[asset] = self.__calculatePlusValenzeForAsset(dict[asset], year)
             except Exception as e:
                 plus_valenze[asset] = None
         return plus_valenze
 
-    def __calculatePlusValenzeForAsset(self, dict: dict) -> float:
+    def __calculatePlusValenzeForAsset(self, dict: dict, year: int = None) -> float:
         """
             Calcola la plusvalenza per un asset
 
@@ -84,6 +84,10 @@ class PlusVCalculator:
         if Transaction.TYPE_SELL in dict and len(dict[Transaction.TYPE_SELL].keys()) > 0:  
             for d_sell in sorted(dict[Transaction.TYPE_SELL].keys(), reverse=True):
                 t_sell = dict[Transaction.TYPE_SELL][d_sell]
+                if year != None and t_sell.timestamp.year != year:
+                    # Skip transaction if year is not the same as the one specified
+                    continue
+
                 sold_qty = t_sell.qty
                 while sold_qty > 0:
                     d_buy, t_buy = self.__getClosestBuyTransaction(dict[Transaction.TYPE_BUY], d_sell)
